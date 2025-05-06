@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABU-ULTRA 3.0</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f7d1d1;
+      font-family: 'Poppins', sans-serif;
+      color: #a00000;
+    }
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px;
+    }
+    .wrapper {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .wrapper svg {
+      width: 100%;
+      height: 60px;
+    }
+    .wrapper svg text {
+      font-family: 'Orbitron', sans-serif;
+      fill: none;
+      stroke: #d00000;
+      stroke-width: 1px;
+      stroke-dasharray: 500;
+      stroke-dashoffset: 500;
+      animation: dash 5s linear infinite;
+      font-size: 30px;
+    }
+
+    @keyframes dash {
+      0% {
+        stroke-dashoffset: 500;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .card {
+      background: #fff0f0;
+      border-radius: 15px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .period-label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .period-label i {
+      margin-right: 8px;
+    }
+    .period-input {
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      background: #ffecec;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .result-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .big-text {
+      background: #ffcccc;
+      padding: 5px 10px;
+      border-radius: 10px;
+      color: #b00000;
+    }
+    .opposite-number {
+      font-size: 16px;
+      color: #b00000;
+      font-weight: normal;
+    }
+    .dashboard-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ffb3b3;
+      padding-bottom: 5px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .connected {
+      color: green;
+      font-weight: bold;
+    }
+    .footer {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 30px;
+    }
+    .history-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+    .history-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 15px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .history-card.yellow {
+      background: #fff8e1;
+      border-left: 5px solid #ffc107;
+    }
+    .history-card.green {
+      background: #e7fbe8;
+      border-left: 5px solid #28a745;
+    }
+    .history-card.red {
+      background: #ffe5e5;
+      border-left: 5px solid #dc3545;
+    }
+    .history-actions i {
+      margin-left: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .fa-trash-alt {
+      color: #cc0000;
+    }
+    .spinner {
+      animation: spin 1s linear infinite;
+      color: #ffc107;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .win-icon {
+      animation: bounce 0.6s ease-in-out infinite;
+      color: #28a745;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+    .loss-icon {
+      animation: shake 0.5s ease-in-out infinite;
+      color: #dc3545;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-3px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="wrapper">
+      <svg>
+        <text x="50%" y="50%" dy=".35em" text-anchor="middle">
+          ABU-ULTRA 3.0
+        </text>
+      </svg>
+    </div>
+
+    <div class="card">
+      <div class="period-label"><i class="fa-solid fa-calendar-days"></i> Period</div>
+      <input type="text" id="periodDisplay" class="period-input" value="-" readonly />
+      <div class="result-section">
+        <span><i class="fa-solid fa-chart-bar"></i> Prediction</span>
+        <span class="big-text" id="predictionDisplay">-</span>
+        <span class="opposite-number" id="oppositeNumberDisplay">-</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="dashboard-title">Analysis Dashboard</div>
+      <div class="info-row"><span><i class="fa-solid fa-percent"></i> Win Rate</span><span id="accuracy">0%</span></div>
+      <div class="info-row"><span><i class="fa-solid fa-trophy"></i> Wins</span><span id="wins">0</span></div>
+      <div class="info-row"><span><i class="fa-solid fa-skull-crossbones"></i> Losses</span><span id="losses">0</span></div>
+      <div class="info-row"><span><i class="fa-solid fa-server"></i> Server Status</span><span class="connected">Connected</span></div>
+    </div>
+
+    <div class="footer">TG @apnabhai87</div>
+
+    <div class="history-title">History</div>
+    <div id="historyContainer"></div>
+  </div>
+
+<script>
+  let historyData = [];
+  let lastFetchedPeriod = null;
+  let lastResult = null;
+  let lastPrediction = null;
+  let lastStatus = null;
+  let lastOppositeNumber = null;
+  let globalPrediction = null;
+
+  function getOppositeNumber(prediction) {
+    const small = [1, 2, 3, 4, 0];
+    const big = [8, 9, 7, 6, 5];
+    let arr = prediction === "BIG" ? small : big;
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function ultraAIPredict(history) {
+    if (history.length < 5) return { prediction: Math.random() > 0.5 ? "BIG" : "SMALL" };
+    let recentResults = history.filter(h => h.result !== "-").slice(0, 2);
+    let bigCount = 0;
+    let smallCount = 0;
+    let weight = 1;
+    for (let i = recentResults.length - 1; i >= 0; i--) {
+      let result = recentResults[i];
+      if (result.result >= 5) {
+        bigCount += weight;
+      } else {
+        smallCount += weight;
+      }
+      weight *= 1.1;
+    }
+    return { prediction: bigCount > smallCount ? "BIG" : "SMALL" };
+  }
+
+  function updateLastStatus(actualNumber) {
+    const match = actualNumber == lastOppositeNumber || (actualNumber >= 5 ? 'BIG' : 'SMALL') === lastPrediction;
+    lastResult = actualNumber >= 5 ? 'BIG' : 'SMALL';
+    lastStatus = match ? 'WIN' : 'LOSS';
+  }
+
+  async function fetchGameResult() {
+    try {
+      let response = await fetch("https://api.bdg88zf.com/api/webapi/GetNoaverageEmerdList", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pageSize: 10, pageNo: 1, typeId: 1, language: 0,
+          random: "4a0522c6ecd8410496260e686be2a57c",
+          signature: "334B5E70A0C9B8918B0B15E517E2069C",
+          timestamp: Math.floor(Date.now() / 1000)
+        })
+      });
+      let data = await response.json();
+      return data?.data?.list?.[0] || null;
+    } catch (e) {
+      console.error("API Error", e);
+      return null;
+    }
+  }
+
+  async function updatePrediction() {
+    let result = await fetchGameResult();
+    if (!result || result.issueNumber === lastFetchedPeriod) return;
+
+    if (historyData.length > 0 && historyData[0].resultStatus === "Pending") {
+      const actualNumber = Number(result.number);
+      updateLastStatus(actualNumber);
+      historyData[0].result = actualNumber;
+      historyData[0].resultStatus = lastStatus;
+    }
+
+    const aiDecision = ultraAIPredict(historyData);
+    lastPrediction = aiDecision.prediction;
+    lastOppositeNumber = getOppositeNumber(lastPrediction);
+    globalPrediction = lastPrediction;
+
+    let nextPeriodFull = (BigInt(result.issueNumber) + 1n).toString();
+    let nextPeriod = nextPeriodFull.slice(-4);
+
+    document.getElementById("periodDisplay").value = nextPeriod;
+    document.getElementById("predictionDisplay").innerText = globalPrediction;
+    document.getElementById("oppositeNumberDisplay").innerText = lastOppositeNumber;
+
+    historyData.unshift({
+      period: nextPeriod,
+      prediction: globalPrediction,
+      oppositeNumber: lastOppositeNumber,
+      result: "-",
+      resultStatus: "Pending"
+    });
+
+    updateHistory();
+    updateStats();
+    lastFetchedPeriod = result.issueNumber;
+  }
+
+  function deleteHistory(index) {
+    historyData.splice(index, 1);
+    updateHistory();
+    updateStats();
+  }
+
+  function updateHistory() {
+    const container = document.getElementById("historyContainer");
+    container.innerHTML = historyData.map((item, index) => {
+      let color = item.resultStatus === "WIN" ? "green" : item.resultStatus === "LOSS" ? "red" : "yellow";
+      let iconClass = item.resultStatus === "WIN" ? "fa-check-circle win-icon" :
+                      item.resultStatus === "LOSS" ? "fa-xmark-circle loss-icon" :
+                      "fa-spinner spinner";
+      return `<div class="history-card ${color}">
+        <div style="flex: 1;">
+          <div><strong><i class="fa fa-calendar"></i> P-${item.period}</strong></div>
+          <div><i class="fa fa-chart-bar"></i> ${item.prediction} | <i class="fa fa-retweet"></i> ${item.oppositeNumber}</div>
+          <div><i class="fa fa-dice"></i> ${item.result !== "-" ? item.result : "Waiting..."}</div>
+        </div>
+        <div class="history-actions">
+          <i class="fa ${iconClass}"></i>
+          <i class="fa-solid fa-trash-alt" onclick="deleteHistory(${index})"></i>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  function updateStats() {
+    const wins = historyData.filter(item => item.resultStatus === "WIN").length;
+    const losses = historyData.filter(item => item.resultStatus === "LOSS").length;
+    const total = wins + losses;
+    const accuracy = total > 0 ? ((wins / total) * 100).toFixed(2) : 0;
+    document.getElementById("wins").textContent = wins;
+    document.getElementById("losses").textContent = losses;
+    document.getElementById("accuracy").textContent = `${accuracy}%`;
+  }
+
+  setInterval(updatePrediction, 5000);
+</script>
+</body>
+</html>
